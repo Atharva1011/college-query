@@ -143,10 +143,29 @@ router.get("/answers", async (req, res) => {
   const question = await Question.findById(
     mongoose.Types.ObjectId(req.query.q_id)
   );
-  // const parameters = [];
-  // parameters.push({ q_txt: question.question });
+  const answers = await Answer.find({
+    ref_question: mongoose.Types.ObjectId(req.query.q_id),
+  });
+  console.log(answers);
+  // const user = await User.findById(mongoose.Types.ObjectId(req.params.id));
+  let answers_list = [];
+  answers.forEach(async (answer) => {
+    let fetchedAuthor = await User.findById(answer.answer.author);
+    // console.log(fetchedAuthor.username);
+    answers_list.push({
+      ans_txt: answer.answer.answer_txt,
+      author: fetchedAuthor.username,
+    });
+  });
+  console.log(answers_list);
+  const no_of_answers = answers.length;
   console.log(req);
-  res.render("answers", { disabled: "disabled", q_txt: question.question });
+  res.render("answers", {
+    disabled: "disabled",
+    q_txt: question.question,
+    answers_list,
+    no_of_answers,
+  });
 });
 
 router.get("/answers/:id", async (req, res) => {

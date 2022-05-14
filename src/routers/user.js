@@ -146,20 +146,17 @@ router.get("/answers", async (req, res) => {
   const answers = await Answer.find({
     ref_question: mongoose.Types.ObjectId(req.query.q_id),
   });
-  console.log(answers);
-  // const user = await User.findById(mongoose.Types.ObjectId(req.params.id));
   let answers_list = [];
-  answers.forEach(async (answer) => {
-    let fetchedAuthor = await User.findById(answer.answer.author);
-    // console.log(fetchedAuthor.username);
-    answers_list.push({
-      ans_txt: answer.answer.answer_txt,
-      author: fetchedAuthor.username,
-    });
-  });
+  for (let i = 0; i < answers.length; i++) {
+    let fetchedAuthor = await User.findById(answers[i].answer.author);
+    var obj = {};
+    obj["ans_txt"] = answers[i].answer.answer_txt;
+    obj["author"] = fetchedAuthor.username;
+    answers_list.push(obj);
+  }
   console.log(answers_list);
   const no_of_answers = answers.length;
-  console.log(req);
+  // console.log(req);
   res.render("answers", {
     disabled: "disabled",
     q_txt: question.question,
@@ -182,14 +179,21 @@ router.get("/answers/:id", async (req, res) => {
   console.log(answers);
   // const user = await User.findById(mongoose.Types.ObjectId(req.params.id));
   let answers_list = [];
-  answers.forEach(async (answer) => {
-    let fetchedAuthor = await User.findById(answer.answer.author);
-    // console.log(fetchedAuthor.username);
-    answers_list.push({
-      ans_txt: answer.answer.answer_txt,
-      author: fetchedAuthor.username,
-    });
-  });
+  // answers.forEach(async (answer) => {
+  //   let fetchedAuthor = await User.findById(answer.answer.author);
+  //   // console.log(fetchedAuthor.username);
+  //   answers_list.push({
+  //     ans_txt: answer.answer.answer_txt,
+  //     author: fetchedAuthor.username,
+  //   });
+  // });
+  for (let i = 0; i < answers.length; i++) {
+    let fetchedAuthor = await User.findById(answers[i].answer.author);
+    var obj = {};
+    obj["ans_txt"] = answers[i].answer.answer_txt;
+    obj["author"] = fetchedAuthor.username;
+    answers_list.push(obj);
+  }
   console.log(answers_list);
   const no_of_answers = answers.length;
   res.render("answers", {
